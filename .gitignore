@@ -1,0 +1,25 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.swp
+*~
+
+# Claude Code local settings
+.claude/
+
+# Tooling (in case any is added later)
+node_modules/
+npm-debug.log*
+.env
+.env.*
+
+# Scratch / exports
+*.log
+*.tmp
+*.bak

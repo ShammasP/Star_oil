@@ -1,0 +1,111 @@
+/* ==========================================================
+   Home: one-screen 3D product carousel over flowing oil
+   ========================================================== */
+body.is-home { overflow: hidden; background: #e9a92c; --fg: var(--ink); }
+
+/* ---------- Loader: the screen fills with oil ---------- */
+.loader {
+  position: fixed; inset: 0; z-index: 150; background: #2a1806;
+  display: grid; place-items: center; overflow: hidden;
+  transition: transform 1.1s var(--ease-oil);
+}
+.loader.is-done { transform: translateY(-100%); }
+html.oil-in .loader, .loader.is-skipped { display: none; }
+.loader__oil {
+  position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--p, 0) * 1%);
+  background: linear-gradient(180deg, #f6cf5e, #e3a22c);
+}
+.loader__wave { position: absolute; left: 0; bottom: calc(100% - 1px); width: 200%; max-width: none; height: 46px; animation: loaderWave 2.4s linear infinite; }
+.loader__wave path { fill: #f6cf5e; }
+@keyframes loaderWave { to { transform: translateX(-50%); } }
+.loader__pct { position: absolute; inset: 0; z-index: 1; margin: 0; display: flex; align-items: center; justify-content: center; font: 800 clamp(3rem, 8vw, 5.5rem)/1 var(--sans); color: #fff6e0; font-variant-numeric: tabular-nums; }
+.loader__pct--ink { color: var(--ink); clip-path: inset(calc(100% - var(--p, 0) * 1%) 0 0 0); }
+
+/* ---------- Scene ---------- */
+.home { position: fixed; inset: 0; overflow: hidden; touch-action: none; user-select: none; }
+.home__oil { position: absolute; inset: 0; width: 100%; height: 100%; }
+.home.no-webgl { background: linear-gradient(135deg, #d99a2b, #f2c25a 45%, #f8d98a 70%, #e0a83a); }
+.home.no-webgl .home__oil { display: none; }
+.home__vignette {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(60% 55% at 50% 46%, rgba(255, 240, 200, .28), transparent 70%),
+    radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(120, 66, 6, .35));
+}
+
+.stage { position: absolute; inset: 0; perspective: 1500px; perspective-origin: 50% 42%; cursor: grab; outline: none; }
+.stage.is-dragging { cursor: grabbing; }
+.item {
+  position: absolute; left: 50%; top: 45%;
+  height: clamp(260px, 52vh, 560px); aspect-ratio: 140 / 180;
+  transform-style: preserve-3d; will-change: transform, filter;
+  opacity: 0;
+}
+.item__float { position: relative; z-index: 1; width: 100%; height: 100%; animation: float 5.5s var(--fd, 0s) ease-in-out infinite alternate; }
+.item .pv { width: 100%; height: 100%; filter: drop-shadow(0 30px 30px rgba(90, 45, 0, .35)); pointer-events: none; }
+.item__shadow {
+  position: absolute; left: 12%; right: 12%; bottom: -7%; height: 9%; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(70, 35, 0, .55), transparent);
+  filter: blur(6px); animation: shadow 5.5s var(--fd, 0s) ease-in-out infinite alternate;
+}
+@keyframes float { from { transform: translateY(-2.5%) rotate(-1deg); } to { transform: translateY(2.5%) rotate(1deg); } }
+@keyframes shadow { from { transform: scale(.82); opacity: .6; } to { transform: scale(1.05); opacity: 1; } }
+.item__cta {
+  position: absolute; left: 50%; top: 50%; z-index: 2; translate: -50% -50%;
+  width: 104px; height: 104px; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(42, 24, 6, .88); color: #fff6e0; font: 800 .85rem/1 var(--sans); text-transform: uppercase; letter-spacing: .08em;
+  scale: .4; opacity: 0; transition: scale .5s var(--ease), opacity .3s; pointer-events: none;
+}
+.item.is-center:hover .item__cta { scale: 1; opacity: 1; }
+
+/* ---------- Names strip ---------- */
+.names {
+  --step: 340px;
+  position: absolute; left: 0; right: 0; bottom: 8vh; height: 78px; overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+}
+.names__track { position: absolute; left: 50%; top: 0; height: 100%; will-change: transform; }
+.name {
+  position: absolute; top: 0; left: calc(var(--j) * var(--step)); width: var(--step); margin-left: calc(var(--step) / -2);
+  border: 0; background: none; padding: 6px 8px; cursor: pointer; text-align: center;
+  font: 800 clamp(1.25rem, 2.1vw, 1.9rem)/1 var(--sans); text-transform: uppercase; letter-spacing: -.01em;
+  color: rgba(70, 38, 4, .34); transition: color .45s, transform .45s var(--ease);
+}
+.name small { display: block; margin-top: 8px; font: 600 .82rem/1 var(--sans); letter-spacing: .14em; opacity: 0; transition: opacity .45s; }
+.name.is-active { color: var(--ink); }
+.name.is-active small { opacity: .75; }
+.name:hover { color: rgba(42, 24, 6, .7); }
+
+.arrow {
+  position: absolute; top: 45%; translate: 0 -50%; z-index: 5;
+  width: 56px; height: 56px; border-radius: 50%; border: 0; cursor: pointer;
+  background: rgba(255, 246, 224, .5); color: var(--ink);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  display: grid; place-items: center; transition: background .3s, transform .4s var(--ease);
+}
+.arrow svg { width: 22px; height: 22px; }
+.arrow:hover { background: rgba(255, 246, 224, .85); transform: scale(1.08); }
+.arrow--prev { left: var(--gutter); }
+.arrow--next { right: var(--gutter); }
+
+.hint {
+  position: absolute; left: 50%; bottom: 3vh; translate: -50% 0; margin: 0;
+  display: flex; gap: 18px; font: 600 .72rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: rgba(42, 24, 6, .55);
+  white-space: nowrap;
+}
+.hint span + span::before { content: "\00b7"; margin-right: 18px; }
+
+/* intro: elements rise after the loader */
+.names, .arrow, .hint, .top { opacity: 0; transition: opacity 1s .5s; }
+body.is-ready .names, body.is-ready .arrow, body.is-ready .hint, body.is-ready .top { opacity: 1; }
+
+@media (max-width: 700px) {
+  .item { top: 43%; height: min(46vh, 78vw); }
+  .names { --step: 64vw; bottom: 11vh; }
+  .arrow { width: 44px; height: 44px; top: auto; bottom: 10.5vh; translate: none; background: rgba(255, 246, 224, .4); }
+  .arrow--prev { left: 12px; }
+  .arrow--next { right: 12px; }
+  .hint span:first-child, .hint span:nth-child(2) { display: none; }
+  .hint span + span::before { content: none; }
+}

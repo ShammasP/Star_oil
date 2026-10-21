@@ -88,7 +88,7 @@ function initCarousel() {
     if (String(getComputedStyle($('.names')).getPropertyValue('--step')).includes('vw')) step = w * 0.64;
   };
   measure();
-  window.addEventListener('resize', measure);
+  window.addEventListener('resize', () => { measure(); });
 
   const offsetFor = (i) => {
     let o = i - wrap(pos);
@@ -97,8 +97,15 @@ function initCarousel() {
     return o;
   };
 
-  let lastActive = -1;
+  let lastActive = -1, lastKey = '';
+  // Phones: changing a blur every frame makes the GPU re-blur large images 60x a second,
+  // so side packs just fade there. Desktops keep the depth-of-field blur.
+  const useBlur = finePointer && !reduceMotion;
   const render = () => {
+    // skip all style writes while the carousel is at rest
+    const key = `${pos.toFixed(4)}|${mouse.sx.toFixed(3)}|${mouse.sy.toFixed(3)}|${spacing}|${step}`;
+    if (key === lastKey) return;
+    lastKey = key;
     items.forEach((el, i) => {
       const o = offsetFor(i);
       const a = Math.abs(o);
@@ -111,8 +118,9 @@ function initCarousel() {
       const sc = 1 - Math.min(a, 2) * 0.07;
       const blur = Math.min(a, 2.2) * 3.4;
       el.style.transform = `translate(-50%, -50%) translate3d(${x.toFixed(1)}px, ${(a * 14).toFixed(1)}px, ${z.toFixed(1)}px) rotateY(${ry.toFixed(2)}deg) rotateX(${rx.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
-      el.style.filter = blur > 0.2 ? `blur(${blur.toFixed(1)}px) saturate(${(1 - a * 0.12).toFixed(2)})` : 'none';
-      el.style.opacity = clamp((N / 2 - a) / 0.45, 0, 1).toFixed(3);
+      if (useBlur) el.style.filter = blur > 0.2 ? `blur(${blur.toFixed(1)}px) saturate(${(1 - a * 0.12).toFixed(2)})` : 'none';
+      const fade = useBlur ? 1 : 1 - Math.min(a, 2) * 0.22;
+      el.style.opacity = (clamp((N / 2 - a) / 0.45, 0, 1) * fade).toFixed(3);
       el.style.zIndex = 100 - Math.round(a * 10);
       el.classList.toggle('is-center', a < 0.35);
     });
@@ -131,13 +139,18 @@ function initCarousel() {
     const dt = Math.min(0.1, (now - lastT) / 1000);
     lastT = now;
     // time-based easing so it feels the same on fast and slow screens
-    if (!dragging) pos += (target - pos) * (reduceMotion ? 1 : 1 - Math.exp(-dt * 5.5));
+    if (!dragging) {
+      pos += (target - pos) * (reduceMotion ? 1 : 1 - Math.exp(-dt * 5.5));
+      if (Math.abs(target - pos) < 0.0004) pos = target; // settle exactly so render() can rest
+    }
     // keep numbers small; visuals are periodic so this jump is invisible
     if (target >= N && pos >= N - 0.5) { target -= N; pos -= N; lastActive = -99; }
     if (target < 0 && pos < -0.5) { target += N; pos += N; lastActive = -99; }
     const k = 1 - Math.exp(-dt * 4.5);
     mouse.sx += (mouse.x - mouse.sx) * k;
     mouse.sy += (mouse.y - mouse.sy) * k;
+    if (Math.abs(mouse.x - mouse.sx) < 0.001) mouse.sx = mouse.x;
+    if (Math.abs(mouse.y - mouse.sy) < 0.001) mouse.sy = mouse.y;
     render();
     requestAnimationFrame(loop);
   };

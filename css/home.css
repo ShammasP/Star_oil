@@ -80,8 +80,7 @@ html.oil-in .loader, .loader.is-skipped { display: none; }
 .arrow {
   position: absolute; top: 45%; translate: 0 -50%; z-index: 5;
   width: 56px; height: 56px; border-radius: 50%; border: 0; cursor: pointer;
-  background: rgba(255, 246, 224, .5); color: var(--ink);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  background: rgba(255, 246, 224, .68); color: var(--ink);
   display: grid; place-items: center; transition: background .3s, transform .4s var(--ease);
 }
 .arrow svg { width: 22px; height: 22px; }
@@ -103,7 +102,7 @@ body.is-ready .names, body.is-ready .arrow, body.is-ready .hint, body.is-ready .
 @media (max-width: 700px) {
   .item { top: 43%; height: min(46vh, 78vw); }
   .names { --step: 64vw; bottom: 11vh; }
-  .arrow { width: 44px; height: 44px; top: auto; bottom: 10.5vh; translate: none; background: rgba(255, 246, 224, .4); }
+  .arrow { width: 44px; height: 44px; top: auto; bottom: 10.5vh; translate: none; background: rgba(255, 246, 224, .6); }
   .arrow--prev { left: 12px; }
   .arrow--next { right: 12px; }
   .hint span:first-child, .hint span:nth-child(2) { display: none; }

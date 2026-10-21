@@ -8,8 +8,12 @@ function initOil(canvas, opts = {}) {
   const gl = canvas.getContext('webgl', { antialias: false, alpha: false });
   if (!gl) { host.classList.add('no-webgl'); return; }
 
+  // phones/tablets: fewer noise layers, fewer pixels, 30 fps. The oil is soft, so it still looks the same.
+  const lowPower = !finePointer || window.innerWidth < 768;
+
   const vert = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }';
   const frag = `
+    #define OCTAVES ${lowPower ? 3 : 4}
     #ifdef GL_FRAGMENT_PRECISION_HIGH
       precision highp float;
     #else
@@ -35,7 +39,7 @@ function initOil(canvas, opts = {}) {
       float v = 0.0;
       float a = 0.5;
       mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
-      for (int i = 0; i < 4; i++) { v += a * noise(p); p = m * p; a *= 0.5; }
+      for (int i = 0; i < OCTAVES; i++) { v += a * noise(p); p = m * p; a *= 0.5; }
       return v;
     }
     // gentle, slow height field: a calm pool of clear oil (not marbled)
@@ -119,7 +123,8 @@ function initOil(canvas, opts = {}) {
   // the oil is soft, so rendering at reduced resolution is invisible and much faster
   let scale = 0.5;
   const resize = () => {
-    scale = (window.innerWidth < 768 ? 0.4 : 0.55) * Math.min(window.devicePixelRatio || 1, 2);
+    // pixels drawn per CSS pixel; ignores the phone's 3x screen density on purpose
+    scale = lowPower ? 0.32 : 0.55 * Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.max(1, Math.round(canvas.clientWidth * scale));
     canvas.height = Math.max(1, Math.round(canvas.clientHeight * scale));
     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -139,7 +144,9 @@ function initOil(canvas, opts = {}) {
   window.addEventListener('pointerup', () => { pressTarget = 0; });
 
   let visible = true, raf = 0, last = performance.now(), t = 12;
+  const minGap = lowPower ? 1000 / 31 : 0; // cap phones at ~30 fps
   const frame = (now) => {
+    if (minGap && now - last < minGap) { if (visible) raf = requestAnimationFrame(frame); return; }
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now; t += dt;
     if (!finePointer) {

@@ -23,3 +23,13 @@ npm-debug.log*
 *.log
 *.tmp
 *.bak
+
+# Python (helper scripts)
+__pycache__/
+*.pyc
+.venv/
+
+# Raw / source images that the site doesn't use (it uses the .webp renders)
+assets/images/products/*.jpg
+assets/images/products/*.jpeg
+assets/images/products/*.png

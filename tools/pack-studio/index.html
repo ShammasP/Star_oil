@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Star Pack Studio</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body { margin: 0; height: 100vh; overflow: hidden; font-family: Outfit, system-ui, sans-serif; color: #fff6e0;
+      background: repeating-conic-gradient(#2c1d0c 0 25%, #24170a 0 50%) 0 0 / 24px 24px; }
+    canvas#view { display: block; width: 100vw; height: 100vh; }
+    .ui { position: fixed; left: 16px; right: 16px; top: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .ui h1 { margin: 0 12px 0 0; font-size: 1.1rem; font-weight: 800; letter-spacing: .04em; }
+    button { font: 600 .9rem/1 Outfit, sans-serif; padding: .7em 1.1em; border-radius: 999px; border: 0; cursor: pointer;
+      background: rgba(255, 246, 224, .12); color: inherit; }
+    button[aria-pressed="true"] { background: #f2b632; color: #2a1806; }
+    button.dl { background: #4f9a2a; margin-left: auto; }
+    .hint { position: fixed; left: 16px; bottom: 14px; margin: 0; font-size: .85rem; opacity: .6; }
+  </style>
+</head>
+<body>
+  <div class="ui" id="ui"><h1>STAR PACK STUDIO</h1></div>
+  <canvas id="view"></canvas>
+  <p class="hint">Drag to turn the pack. "Download PNG" renders a 1200 × 1500 image with a transparent background, at the angle used on the site.</p>
+
+  <script type="importmap">
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+    } }
+  </script>
+  <script type="module" src="studio.js"></script>
+</body>
+</html>

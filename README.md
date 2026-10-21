@@ -22,13 +22,18 @@ Everything about the products (names, text, colours, photos) **and** the phone/W
 | What | File |
 |---|---|
 | Logo | `assets/images/logo.svg` (to use a PNG, change `logo.svg` in `js/common.js`) |
-| 5 L can | `assets/images/products/5l-can.png` |
-| 2 L bottle | `assets/images/products/2l-bottle.png` |
-| 1 L bottle | `assets/images/products/1l-bottle.png` |
-| 1 L pouch | `assets/images/products/1l-pouch.png` |
-| 500 ml pouch | `assets/images/products/500ml-pouch.png` |
+| 5 L can | `assets/images/products/5l-can.webp` |
+| 2 L bottle | `assets/images/products/2l-bottle.webp` |
+| 1 L bottle | `assets/images/products/1l-bottle.webp` |
+| 1 L pouch | `assets/images/products/1l-pouch.webp` |
+| 500 ml pouch | `assets/images/products/500ml-pouch.webp` |
 
-Use PNGs with a **transparent background**, upright, about 1000 px tall. Until a photo exists, the drawn illustration is shown.
+Use images with a **transparent background** (WebP or PNG; update the path in `js/data.js` if the name differs), upright, about 1000 px tall. Until a photo exists, the drawn illustration is shown.
+
+### Pack Studio (3D product renders)
+The product images are rendered from 3D models in code: open `tools/pack-studio/` on the local server
+(e.g. http://127.0.0.1:8765/tools/pack-studio/). Drag to turn a pack, then click **Download PNG** for a
+1200 × 1500 transparent render. Pack shapes, colours and label text are at the top of `tools/pack-studio/studio.js`.
 
 ## Publish on GitHub Pages
 1. Create a new repository on GitHub and push this folder to it.
@@ -49,5 +54,5 @@ All links are relative, so the site works both at that address and on its own do
 index.html  product.html  story.html  contact.html  404.html
 css/      base.css (shared), home.css, product.css, pages.css
 js/       data.js (content), common.js (shared), oil.js (oil shader), home.js, product.js, pages.js
-assets/   images/logo.svg, images/lineup.webp, images/products/*.png
+assets/   images/logo.svg, images/lineup.webp, images/products/*.webp
 ```

@@ -1,5 +1,5 @@
 /* ==========================================================
-   Shared: header + menu, footer, oil page transition, cursor,
+   Shared: header + menu, footer, oil page transition,
    scroll reveal, product illustrations
    ========================================================== */
 
@@ -81,7 +81,7 @@ function renderHeader() {
   header.innerHTML = `
     <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>
     <a class="brand" href="index.html" aria-label="Star Pure Coconut Oil, home">
-      <img src="assets/images/logo.svg" alt="Star" width="120" height="64">
+      <img src="assets/images/logo.svg" alt="Star Coconut Oil" width="174" height="136">
       <svg class="brand__drip" viewBox="0 0 120 40" aria-hidden="true">
         <path d="M24 0H96C92 4 88 5 84 5C82 5 81 7 81 9V16A4 4 0 0 1 73 16V8C73 6 71 5 69 5C66 5 64 6 64 9V26A5 5 0 0 1 54 26V9C54 6 52 5 50 5C48 5 46 6 46 9V13A3.5 3.5 0 0 1 39 13V9C39 6 37 5 34 5C30 5 27 3 24 0Z"/>
         <circle class="brand__drop" cx="59" cy="34" r="3.2"/>
@@ -90,6 +90,7 @@ function renderHeader() {
     <nav class="menu" id="menu" aria-label="Main">
       ${links.map(([href, label]) => `<a href="${href}" ${href === here ? 'aria-current="page"' : ''}>${label}</a>`).join('')}
       <a class="menu__wa" href="${waLink('Hello Star Coconut Oil! I would like to place an order.')}" target="_blank" rel="noopener">Order on WhatsApp &nearr;</a>
+      ${SITE.instagram ? `<a class="menu__ig" href="${SITE.instagram}" target="_blank" rel="noopener">Instagram &nearr;</a>` : ''}
     </nav>`;
   document.body.prepend(header);
 
@@ -124,10 +125,11 @@ function renderFooter() {
       <a href="${waLink('Hello Star Coconut Oil!')}" target="_blank" rel="noopener">WhatsApp</a>
     </nav>
     <div class="foot__card">
+      <img class="foot__logo" src="assets/images/logo.svg" alt="Star Coconut Oil" width="174" height="136" loading="lazy">
       <p class="foot__label">Follow Star</p>
       <div class="foot__social">
-        <a href="${SITE.instagram}" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.3" fill="currentColor"/></svg></a>
-        <a href="${SITE.facebook}" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H7v4h3v8h4v-8h3l1-4h-4V8z" fill="currentColor"/></svg></a>
+        ${SITE.instagram ? `<a href="${SITE.instagram}" target="_blank" rel="noopener" aria-label="Star on Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.3" fill="currentColor"/></svg></a>` : ''}
+        ${SITE.facebook ? `<a href="${SITE.facebook}" target="_blank" rel="noopener" aria-label="Star on Facebook"><svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H7v4h3v8h4v-8h3l1-4h-4V8z" fill="currentColor"/></svg></a>` : ''}
         <a href="${waLink('Hello Star Coconut Oil!')}" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3zm4.6 12.6c-.2.6-1.2 1.1-1.7 1.1-.4.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.6-1.1-4.3-3.8-4.4-4-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.6-.3h.5c.2 0 .4 0 .6.4l.8 2c.1.2.1.3 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.7 1.2 1.5 1.9 1 .9 1.9 1.2 2.2 1.3.3.1.4.1.6-.1l.8-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.2z" fill="currentColor"/></svg></a>
       </div>
       <p class="foot__sign">Pure <span class="script">Kerala</span> goodness</p>
@@ -226,33 +228,11 @@ function initReveal() {
   els.forEach((e) => io.observe(e));
 }
 
-/* ---------- Golden cursor ---------- */
-function initCursor() {
-  if (!finePointer || reduceMotion) return;
-  const dot = document.createElement('div');
-  dot.className = 'cursor';
-  dot.setAttribute('aria-hidden', 'true');
-  document.body.append(dot);
-  let x = -100, y = -100, cx = x, cy = y;
-  window.addEventListener('pointermove', (e) => { x = e.clientX; y = e.clientY; dot.classList.add('is-on'); }, { passive: true });
-  document.addEventListener('pointerleave', () => dot.classList.remove('is-on'));
-  document.addEventListener('pointerover', (e) => {
-    dot.classList.toggle('is-big', !!e.target.closest('a, button, [data-hover], input, select, textarea'));
-  });
-  const loop = () => {
-    cx += (x - cx) * 0.2; cy += (y - cy) * 0.2;
-    dot.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
-    requestAnimationFrame(loop);
-  };
-  loop();
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   document.body.insertAdjacentHTML('afterbegin', SPRITE);
   renderHeader();
   renderFooter();
   initCurtain();
   initReveal();
-  initCursor();
   $$('.js-phone').forEach((el) => { el.textContent = SITE.phoneDisplay; el.href = `tel:+${SITE.whatsapp}`; });
 });

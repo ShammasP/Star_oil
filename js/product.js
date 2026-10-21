@@ -41,13 +41,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // pouring pack: rotate it so its mouth sits exactly on top of the stream
   const MOUTH = { 'ico-jar': [46, 16], 'ico-bottle': [60, 10], 'ico-pouch': [70, 14] };
-  const [mx, my] = p.art.pour || MOUTH[p.art.sym];
-  bind('pourPack', (g) => {
+  const place = (g, [mx, my]) =>
     g.setAttribute('transform', `translate(300 40) rotate(-138) scale(1.45) translate(${-mx} ${-my})`);
+  bind('pourPack', (g) => {
+    place(g, p.art.pour || MOUTH[p.art.sym]);
     g.setAttribute('style', `--body:${p.art.body || '#5ba52e'};--cap:${p.art.cap || '#3f7d22'};--oil:${p.art.oil}`);
     g.innerHTML = `<use href="#${p.art.sym}" width="140" height="180"/>`;
     const photo = new Image();
-    photo.onload = () => { g.innerHTML = `<image href="${p.img}" width="140" height="180" preserveAspectRatio="xMidYMid meet"/>`; };
+    photo.onload = () => {
+      if (p.photoPour) place(g, p.photoPour);
+      g.innerHTML = `<image href="${p.img}" width="140" height="180" preserveAspectRatio="xMidYMid meet"/>`;
+    };
     photo.src = p.img;
   });
   const pour = $('.p-pour');

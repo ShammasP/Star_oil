@@ -7,10 +7,10 @@ window.SITE = {
   company: 'Bismi Traders',
   proprietor: 'NK Mohammed Shareef',
   address: 'House No. 145, Salmas, Near Juma Masjid, Muttam Vengara, Kannur, Kerala 670305',
-  whatsapp: '910000000000',          // country code + number, digits only (e.g. 919876543210)
-  phoneDisplay: '+91 00000 00000',
-  instagram: '#',
-  facebook: '#',
+  whatsapp: '919447228704',          // country code + number, digits only (e.g. 919876543210)
+  phoneDisplay: '+91 944 722 8704', // display format for phone number
+  instagram: 'https://www.instagram.com/star_coconutoil/',
+  facebook: '',                      // add the page URL to show the Facebook icon
 };
 
 window.PRODUCTS = [
@@ -25,7 +25,8 @@ window.PRODUCTS = [
     details: [['5 L', 'Pack size'], ['Yellow & clear', 'Can colours'], ['Homes & hotels', 'Best for']],
     theme: { bg: '#f6c62e', bg2: '#fbdc6a', fg: '#3a2306' },
     art: { sym: 'ico-jar', body: '#f6c419', cap: '#f6c419', oil: '#f0a51c', scale: 1 },
-    img: 'assets/images/products/5l-can.png',
+    img: 'assets/images/products/5l-can.webp',
+    photoPour: [43.9, 16.7],   // where the cap sits in the image (140x180 box), from tools/pack-studio
   },
   {
     id: '2l-bottle',
@@ -38,7 +39,8 @@ window.PRODUCTS = [
     details: [['2 L', 'Pack size'], ['Easy-grip', 'Handle'], ['Daily cooking', 'Best for']],
     theme: { bg: '#cfe7ae', bg2: '#e2f2cc', fg: '#1f3a10' },
     art: { sym: 'ico-bottle', body: '#fbf3dc', cap: '#d8262f', oil: '#f2c654', scale: 1 },
-    img: 'assets/images/products/2l-bottle.png',
+    img: 'assets/images/products/2l-bottle.webp',
+    photoPour: [53.8, 18.1],   // where the cap sits in the image (140x180 box), from tools/pack-studio
   },
   {
     id: '1l-bottle',
@@ -51,7 +53,8 @@ window.PRODUCTS = [
     details: [['1 L', 'Pack size'], ['Kitchen & care', 'Use'], ['Small homes', 'Best for']],
     theme: { bg: '#f4e4c4', bg2: '#fbf1dc', fg: '#4a2a0e' },
     art: { sym: 'ico-bottle', body: '#fbf3dc', cap: '#d8262f', oil: '#f2c654', scale: 0.86 },
-    img: 'assets/images/products/1l-bottle.png',
+    img: 'assets/images/products/1l-bottle.webp',
+    photoPour: [53.8, 18.1],   // where the cap sits in the image (140x180 box), from tools/pack-studio
   },
   {
     id: '1l-pouch',
@@ -64,7 +67,8 @@ window.PRODUCTS = [
     details: [['1 L', 'Pouch'], ['10 pouches', 'Per carton'], ['Shops & refills', 'Best for']],
     theme: { bg: '#e6c69c', bg2: '#f1dbbb', fg: '#3b2208' },
     art: { sym: 'ico-pouch', oil: '#f2c654', scale: 1 },
-    img: 'assets/images/products/1l-pouch.png',
+    img: 'assets/images/products/1l-pouch.webp',
+    photoPour: [67.7, 2.1],   // where the cap sits in the image (140x180 box), from tools/pack-studio
   },
   {
     id: '500ml-pouch',
@@ -77,6 +81,7 @@ window.PRODUCTS = [
     details: [['500 ml', 'Pouch'], ['20 pouches', 'Per carton'], ['First try', 'Best for']],
     theme: { bg: '#f4ad9e', bg2: '#f9c9bd', fg: '#4a140f' },
     art: { sym: 'ico-pouch', oil: '#f2c654', scale: 0.82 },
-    img: 'assets/images/products/500ml-pouch.png',
+    img: 'assets/images/products/500ml-pouch.webp',
+    photoPour: [67.9, 2.1],   // where the cap sits in the image (140x180 box), from tools/pack-studio
   },
 ];

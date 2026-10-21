@@ -84,8 +84,8 @@ function renderHeader() {
       <img src="assets/images/logo.svg" alt="Star Coconut Oil" width="174" height="136">
       <svg class="brand__drip" viewBox="0 0 120 40" aria-hidden="true">
         <path d="M24 0H96C92 4 88 5 84 5C82 5 81 7 81 9V16A4 4 0 0 1 73 16V8C73 6 71 5 69 5C66 5 64 6 64 9V26A5 5 0 0 1 54 26V9C54 6 52 5 50 5C48 5 46 6 46 9V13A3.5 3.5 0 0 1 39 13V9C39 6 37 5 34 5C30 5 27 3 24 0Z"/>
-        <circle class="brand__drop" cx="59" cy="34" r="3.2"/>
       </svg>
+      <span class="brand__drop" aria-hidden="true"></span>
     </a>
     <nav class="menu" id="menu" aria-label="Main">
       ${links.map(([href, label]) => `<a href="${href}" ${href === here ? 'aria-current="page"' : ''}>${label}</a>`).join('')}

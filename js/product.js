@@ -72,33 +72,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // hero pack follows the mouse and drifts on scroll
   const visual = $('.p-hero__visual');
-  if (!reduceMotion) {
+  const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
+  if (!reduceMotion && finePointer) { // phones have no hover: skip the tilt entirely
     window.addEventListener('pointermove', (e) => {
-      visual.style.setProperty('--mx', ((e.clientX / innerWidth - 0.5) * 2).toFixed(3));
-      visual.style.setProperty('--my', ((e.clientY / innerHeight - 0.5) * 2).toFixed(3));
+      tilt.tx = (e.clientX / innerWidth - 0.5) * 2;
+      tilt.ty = (e.clientY / innerHeight - 0.5) * 2;
     }, { passive: true });
   }
 
-  // arc text: slides constantly, faster while scrolling
+  // arc text: slides along the curve, faster while scrolling.
+  // Moving text on a path re-lays out every glyph, so only do it while the section is on screen,
+  // and only repeat the text as often as the curve needs.
   const tp = $('.p-arc__text');
+  const arcLen = $('#arcPath').getTotalLength();
   const unit = `${p.name} · Pure coconut oil · `;
-  tp.textContent = unit.repeat(8);
-  let unitLen = 0, offset = 0, lastY = scrollY, boost = 0;
-  const measure = () => { unitLen = tp.getComputedTextLength() / 8; };
-  (document.fonts ? document.fonts.ready : Promise.resolve()).then(measure);
-  measure();
+  let unitLen = 0, offset = 0, boost = 0, lastY = scrollY, heroY = -1;
+  const fill = () => {
+    tp.textContent = unit;
+    unitLen = tp.getComputedTextLength() || 1;
+    tp.textContent = unit.repeat(Math.ceil(arcLen / unitLen) + 2);
+  };
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(fill);
+  fill();
+
+  // pause the pour scene (text, stream, ripples, badge) whenever it's off screen
+  const pourSection = $('.p-pour'), hero = $('.p-hero');
+  let pourOn = false, heroOn = true;
+  new IntersectionObserver(([en]) => {
+    pourOn = en.isIntersecting;
+    pourSection.classList.toggle('is-live', pourOn);
+  }).observe(pourSection);
+  new IntersectionObserver(([en]) => { heroOn = en.isIntersecting; }).observe(hero);
 
   const loop = () => {
     const y = scrollY;
     boost += (Math.abs(y - lastY) * 0.6 - boost) * 0.1;
     lastY = y;
-    if (!reduceMotion) offset -= 0.6 + boost;
-    if (unitLen > 0 && offset < -unitLen) offset += unitLen;
-    tp.setAttribute('startOffset', offset.toFixed(1));
-
-    if (!reduceMotion && y < innerHeight * 1.2) {
-      visual.style.setProperty('--sy', `${(y * 0.25).toFixed(1)}px`);
-      visual.style.setProperty('--sr', `${(y * 0.02).toFixed(2)}deg`);
+    if (pourOn) {
+      if (!reduceMotion) offset -= 0.6 + boost;
+      if (offset < -unitLen) offset += unitLen;
+      tp.setAttribute('startOffset', offset.toFixed(1));
+    }
+    if (heroOn && !reduceMotion) { // hero pack drifts with scroll and leans to the mouse
+      const dx = tilt.tx - tilt.x, dy = tilt.ty - tilt.y;
+      const tilting = Math.abs(dx) + Math.abs(dy) > 0.001;
+      if (tilting) { tilt.x += dx * 0.12; tilt.y += dy * 0.12; }
+      if (tilting || y !== heroY) { // skip the style write when nothing changed
+        heroY = y;
+        const st = visual.style;
+        st.setProperty('--sy', `${(y * 0.25).toFixed(1)}px`);
+        st.setProperty('--sr', `${(y * 0.02).toFixed(2)}deg`);
+        st.setProperty('--mx', tilt.x.toFixed(3));
+        st.setProperty('--my', tilt.y.toFixed(3));
+      }
     }
     requestAnimationFrame(loop);
   };

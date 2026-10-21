@@ -11,7 +11,7 @@ body.is-product { background: var(--bg); color: var(--fg); }
   background: radial-gradient(70% 70% at 62% 50%, var(--bg2), var(--bg) 70%);
 }
 .p-hero__grain {
-  position: absolute; inset: 0; pointer-events: none; opacity: .18; mix-blend-mode: multiply;
+  position: absolute; inset: 0; pointer-events: none; opacity: .1;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .3 0 0 0 0 .2 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 .p-title { position: relative; z-index: 2; font-size: clamp(4rem, 11vw, 10.5rem); line-height: .86; font-weight: 900; letter-spacing: -.03em; }
@@ -27,7 +27,7 @@ body.is-product { background: var(--bg); color: var(--fg); }
   position: relative; z-index: 1; justify-self: center;
   height: min(70vh, 640px); aspect-ratio: 140 / 180;
   transform: translateY(var(--sy, 0px)) rotateY(calc(var(--mx, 0) * 14deg)) rotateX(calc(var(--my, 0) * -8deg)) rotate(var(--sr, 0deg));
-  transition: transform .25s linear;
+  will-change: transform; /* own layer: the blurred shadow is drawn once, then just moved */
 }
 .p-hero__visual .pv { width: 100%; height: 100%; filter: drop-shadow(0 50px 40px rgba(0, 0, 0, .25)); }
 .p-hero__visual::after { /* floor shadow */
@@ -72,6 +72,8 @@ body.is-in .p-hero__visual .pv { animation: spinIn 1.7s .05s var(--ease) forward
 
 /* ---------- 3. Arc + pour ---------- */
 .p-pour { position: relative; height: clamp(620px, 110vh, 980px); overflow: hidden; }
+/* nothing in the pour scene animates while it's off screen (product.js toggles .is-live) */
+.p-pour:not(.is-live) *, .p-pour:not(.is-live) *::before, .p-pour:not(.is-live) *::after { animation-play-state: paused !important; }
 .p-arc { position: absolute; left: 0; top: 0; width: 100%; height: auto; overflow: visible; }
 .p-arc text { font: 900 92px/1 var(--sans); text-transform: uppercase; letter-spacing: 2px; fill: var(--fg); opacity: .14; }
 .p-pour__art { position: absolute; left: 50%; bottom: 0; translate: -50% 0; height: 76%; width: auto; overflow: visible; }
